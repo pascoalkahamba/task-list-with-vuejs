@@ -7,28 +7,31 @@ import TransactionList from './components/TransactionList.vue'
 import AddTransaction from './components/addTransaction.vue'
 
 const transactions = ref([
-  { name: 'Food', price: 200.12 },
-  { name: 'Fruit', price: 300.12 },
-  { name: 'Clothes', price: 500.12 },
-  { name: 'Houses', price: 2000.12 },
-  { name: 'Shirt', price: 300.12 }
+  { id: getUniqueId(), text: 'Food', amount: -200.12 },
+  { id: getUniqueId(), text: 'Fruit', amount: 300.12 },
+  { id: getUniqueId(), text: 'Clothes', amount: -500.12 },
+  { id: getUniqueId(), text: 'Houses', amount: -2000.12 },
+  { id: getUniqueId(), text: 'Shirt', amount: 300.12 }
 ])
+
+function getUniqueId() {
+  return Math.round(Math.random() * 10000)
+}
 
 const total = computed(() =>
   transactions.value
     .reduce((acc, trans) => {
-      return acc + trans.price
+      return acc + trans.amount
     }, 0)
     .toFixed(2)
 )
-console.log(total)
 </script>
 <template>
   <section class="container">
     <Header />
     <Balance :total="total" />
     <IncomeExpenses />
-    <TransactionList />
+    <TransactionList :transactions="transactions" />
     <AddTransaction />
   </section>
 </template>
