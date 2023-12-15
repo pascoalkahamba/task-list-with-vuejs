@@ -7,7 +7,7 @@
 
     <label for="amount">Amount</label>
     <input type="number" id="amount" />
-    <span>(Aqui vai a descricao)</span>
+    <span>(negative - expense, posive - income)</span>
 
     <button type="submit" class="btn">Add Transaction</button>
   </form>
