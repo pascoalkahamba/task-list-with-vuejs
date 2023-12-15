@@ -8,9 +8,9 @@ import AddTransaction from './components/addTransaction.vue'
 
 const transactions = ref([
   { id: getUniqueId(), text: 'Food', amount: -200.12 },
-  { id: getUniqueId(), text: 'Fruit', amount: 300.12 },
+  { id: getUniqueId(), text: 'Fruit', amount: 500.12 },
   { id: getUniqueId(), text: 'Clothes', amount: -500.12 },
-  { id: getUniqueId(), text: 'Houses', amount: -2000.12 },
+  { id: getUniqueId(), text: 'Houses', amount: -3000.12 },
   { id: getUniqueId(), text: 'Shirt', amount: 300.12 }
 ])
 
@@ -18,19 +18,33 @@ function getUniqueId() {
   return Math.round(Math.random() * 10000)
 }
 
-const total = computed(() =>
+const income = computed(() =>
   transactions.value
+    .filter((transaction) => transaction.amount > 0)
     .reduce((acc, trans) => {
       return acc + trans.amount
     }, 0)
-    .toFixed(2)
+)
+
+const expense = computed(() =>
+  transactions.value
+    .filter((transaction) => transaction.amount < 0)
+    .reduce((acc, trans) => {
+      return acc + trans.amount
+    }, 0)
+)
+
+const total = computed(() =>
+  transactions.value.reduce((acc, trans) => {
+    return acc + trans.amount
+  }, 0)
 )
 </script>
 <template>
   <section class="container">
     <Header />
     <Balance :total="total" />
-    <IncomeExpenses />
+    <IncomeExpenses :expense="expense" :income="income" />
     <TransactionList :transactions="transactions" />
     <AddTransaction />
   </section>
