@@ -14,19 +14,13 @@ interface TransactionsPrps {
 }
 
 const toast = useToast();
-const transactions = ref([
-  { id: getUniqueId(), text: 'Food', amount: -200.12 },
-  { id: getUniqueId(), text: 'Fruit', amount: 500.12 },
-  { id: getUniqueId(), text: 'Clothes', amount: -500.12 },
-  { id: getUniqueId(), text: 'Houses', amount: -3000.12 },
-  { id: getUniqueId(), text: 'Shirt', amount: 300.12 }
-]);
+const transactions = ref<TransactionsPrps[]>([]);
 
 onMounted(() => {
   function areThereInLocalStorage() {
-    const storageValue = JSON.parse(localStorage.getItem('transactions') as string);
-    if (storageValue) {
-      transactions.value = storageValue as typeof transactions.value;
+    const storageTransactions = JSON.parse(localStorage.getItem('transactions') as string);
+    if (storageTransactions) {
+      transactions.value = storageTransactions as typeof transactions.value;
     }
   }
 
@@ -59,6 +53,10 @@ const total = computed(() =>
   }, 0)
 );
 
+function saveTransactionsToLocalStorage() {
+  localStorage.setItem('transactions', JSON.stringify(transactions.value));
+}
+
 function addTransaction(transaction: TransactionsPrps) {
   transactions.value.push({
     id: getUniqueId(),
@@ -66,11 +64,13 @@ function addTransaction(transaction: TransactionsPrps) {
     amount: transaction.amount
   });
 
+  saveTransactionsToLocalStorage();
   toast.success('Transaction added');
 }
 
 function handleDeleteTransaction(id: number) {
   transactions.value = transactions.value.filter((transaction) => transaction.id !== id);
+  saveTransactionsToLocalStorage();
   toast.success('Transaction Deleted');
 }
 </script>
