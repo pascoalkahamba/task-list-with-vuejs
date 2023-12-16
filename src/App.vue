@@ -6,6 +6,12 @@ import IncomeExpenses from './components/IncomeExpenses.vue'
 import TransactionList from './components/TransactionList.vue'
 import AddTransaction from './components/addTransaction.vue'
 
+interface TransactionsPrps {
+  id: number
+  text: string
+  amount: string
+}
+
 const transactions = ref([
   { id: getUniqueId(), text: 'Food', amount: -200.12 },
   { id: getUniqueId(), text: 'Fruit', amount: 500.12 },
@@ -39,6 +45,11 @@ const total = computed(() =>
     return acc + trans.amount
   }, 0)
 )
+
+function addTransaction(transaction: TransactionsPrps) {
+  transactions.value.push(...transaction)
+  console.log('OK')
+}
 </script>
 <template>
   <section class="container">
@@ -46,6 +57,6 @@ const total = computed(() =>
     <Balance :total="total" />
     <IncomeExpenses :expense="expense" :income="income" />
     <TransactionList :transactions="transactions" />
-    <AddTransaction />
+    <AddTransaction :handleOnSubmit="addTransaction" />
   </section>
 </template>
