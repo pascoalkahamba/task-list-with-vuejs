@@ -1,54 +1,77 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import Balance from './components/CurrentBalance.vue'
-import Header from './components/MyHeader.vue'
-import IncomeExpenses from './components/IncomeExpenses.vue'
-import TransactionList from './components/TransactionList.vue'
-import AddTransaction from './components/addTransaction.vue'
+import { computed, ref, onMounted } from 'vue';
+import Balance from './components/CurrentBalance.vue';
+import Header from './components/MyHeader.vue';
+import IncomeExpenses from './components/IncomeExpenses.vue';
+import TransactionList from './components/TransactionList.vue';
+import AddTransaction from './components/addTransaction.vue';
+import { useToast } from 'vue-toastification';
 
 interface TransactionsPrps {
-  id: number
-  text: string
-  amount: string
+  id: number;
+  text: string;
+  amount: number;
 }
 
+const toast = useToast();
 const transactions = ref([
   { id: getUniqueId(), text: 'Food', amount: -200.12 },
   { id: getUniqueId(), text: 'Fruit', amount: 500.12 },
   { id: getUniqueId(), text: 'Clothes', amount: -500.12 },
   { id: getUniqueId(), text: 'Houses', amount: -3000.12 },
   { id: getUniqueId(), text: 'Shirt', amount: 300.12 }
-])
+]);
+
+onMounted(() => {
+  function areThereInLocalStorage() {
+    const storageValue = JSON.parse(localStorage.getItem('transactions') as string);
+    if (storageValue) {
+      transactions.value = storageValue as typeof transactions.value;
+    }
+  }
+
+  areThereInLocalStorage();
+});
 
 function getUniqueId() {
-  return Math.round(Math.random() * 10000)
+  return Math.round(Math.random() * 10000);
 }
 
 const income = computed(() =>
   transactions.value
     .filter((transaction) => transaction.amount > 0)
     .reduce((acc, trans) => {
-      return acc + trans.amount
+      return acc + trans.amount;
     }, 0)
-)
+);
 
 const expense = computed(() =>
   transactions.value
     .filter((transaction) => transaction.amount < 0)
     .reduce((acc, trans) => {
-      return acc + trans.amount
+      return acc + trans.amount;
     }, 0)
-)
+);
 
 const total = computed(() =>
   transactions.value.reduce((acc, trans) => {
-    return acc + trans.amount
+    return acc + trans.amount;
   }, 0)
-)
+);
 
 function addTransaction(transaction: TransactionsPrps) {
-  transactions.value.push(...transaction)
-  console.log('OK')
+  transactions.value.push({
+    id: getUniqueId(),
+    text: transaction.text,
+    amount: transaction.amount
+  });
+
+  toast.success('Transaction added');
+}
+
+function handleDeleteTransaction(id: number) {
+  transactions.value = transactions.value.filter((transaction) => transaction.id !== id);
+  toast.success('Transaction Deleted');
 }
 </script>
 <template>
@@ -56,7 +79,7 @@ function addTransaction(transaction: TransactionsPrps) {
     <Header />
     <Balance :total="total" />
     <IncomeExpenses :expense="expense" :income="income" />
-    <TransactionList :transactions="transactions" />
-    <AddTransaction :handleOnSubmit="addTransaction" />
+    <TransactionList :transactions="transactions" @transactionDeleted="handleDeleteTransaction" />
+    <AddTransaction @handleOnSubmit="addTransaction" />
   </section>
 </template>

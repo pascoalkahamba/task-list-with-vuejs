@@ -1,34 +1,32 @@
 <script setup lang="ts">
-import { defineProps, defineEmits, ref } from 'vue'
-import { useToast } from 'vue-toastification'
+import { defineProps, defineEmits, ref } from 'vue';
+import { useToast } from 'vue-toastification';
 interface TransactionsPrps {
-  id: number
-  text: string
-  amount: string
+  id: number;
+  text: string;
+  amount: number;
 }
 
-const toast = useToast()
+const toast = useToast();
 
 defineProps<{
-  handleOnSubmit: (transactions: TransactionsPrps) => void
-}>()
+  handleOnSubmit: (transactions: TransactionsPrps) => void;
+}>();
 
-const emit = defineEmits(['handleOnSubmit'])
-const text = ref('')
-const amount = ref('')
+const emit = defineEmits(['handleOnSubmit']);
+const text = ref('');
+const amount = ref('');
 
-function isEmpty() {
-  if (!text.value || !amount.value) {
-    return toast.error('Both fields must be filled!')
-  }
-  text.value = ''
-  amount.value = ''
-}
-const transactionData = { text: text.value, amount: amount.value }
 function onSubmit() {
-  console.log(text.value, amount.value)
-  isEmpty()
-  emit('handleOnSubmit', transactionData)
+  if (!text.value || !amount.value) {
+    toast.error('Both fields must be filled!');
+    return;
+  }
+
+  const transactionData = { text: text.value, amount: parseFloat(amount.value) };
+  emit('handleOnSubmit', transactionData);
+  text.value = '';
+  amount.value = '';
 }
 </script>
 <template>
@@ -38,7 +36,7 @@ function onSubmit() {
     <input type="text" id="text" v-model="text" />
 
     <label for="amount">Amount</label>
-    <input type="text" id="amount" v-model="amount" />
+    <input type="number" id="amount" v-model="amount" />
     <span>(negative - expense, posive - income)</span>
 
     <button type="submit" class="btn">Add Transaction</button>

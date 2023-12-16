@@ -1,14 +1,22 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
+import { defineProps, defineEmits } from 'vue';
 
 interface TransactionsProps {
-  id: number
-  text: string
-  amount: number
+  id: number;
+  text: string;
+  amount: number;
 }
 defineProps<{
-  transactions: TransactionsProps[]
-}>()
+  transactions: TransactionsProps[];
+  transactionDeleted: (id: number) => void;
+}>();
+
+const emit = defineEmits(['transactionDeleted']);
+
+function onDeleteTransaction(id: number) {
+  emit('transactionDeleted', id);
+  console.log('Delete', id);
+}
 </script>
 
 <template>
@@ -22,7 +30,7 @@ defineProps<{
       >
         <span>{{ transaction.text }}</span>
         <span>${{ transaction.amount }}</span>
-        <button class="delete-btn">X</button>
+        <button class="delete-btn" @click="onDeleteTransaction(transaction.id)">X</button>
       </li>
     </ul>
   </section>
