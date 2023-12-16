@@ -1,1 +1,1 @@
-# A small web application to task list about mangene company with vuejs.
+# A small web application to task list about organize companies with vuejs.
