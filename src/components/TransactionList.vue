@@ -8,7 +8,7 @@ interface TransactionsProps {
 }
 defineProps<{
   transactions: TransactionsProps[];
-  transactionDeleted: (id: number) => void;
+  transactionDeleted?: (id: number) => void;
 }>();
 
 const emit = defineEmits(['transactionDeleted']);

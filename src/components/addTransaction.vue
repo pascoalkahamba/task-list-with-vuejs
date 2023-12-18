@@ -10,7 +10,7 @@ interface TransactionsPrps {
 const toast = useToast();
 
 defineProps<{
-  handleOnSubmit: (transactions: TransactionsPrps) => void;
+  handleOnSubmit?: (transactions: TransactionsPrps) => void;
 }>();
 
 const emit = defineEmits(['handleOnSubmit']);
