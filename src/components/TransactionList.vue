@@ -8,14 +8,13 @@ interface TransactionsProps {
 }
 defineProps<{
   transactions: TransactionsProps[];
-  transactionDeleted?: (id: number) => void;
+ 
 }>();
 
 const emit = defineEmits(['transactionDeleted']);
 
 function onDeleteTransaction(id: number) {
   emit('transactionDeleted', id);
-  console.log('Delete', id);
 }
 </script>
 
@@ -30,7 +29,13 @@ function onDeleteTransaction(id: number) {
       >
         <span>{{ transaction.text }}</span>
         <span>${{ transaction.amount }}</span>
-        <button class="delete-btn" @click="onDeleteTransaction(transaction.id)">X</button>
+        <button
+          class="delete-btn"
+          @click="onDeleteTransaction(transaction.id)"
+          @keyup.alt.space="(key) => console.log(key)"
+        >
+          X
+        </button>
       </li>
     </ul>
   </section>
